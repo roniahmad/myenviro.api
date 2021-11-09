@@ -48,7 +48,7 @@ trait UtilsTrait
     {
         $konpik = DB::table('master.config')
                 ->select('parameter_value')
-                ->where('name', $config_name)
+                ->where('nama', $config_name)
                 ->first();
         $number = 0;
         if($konpik){

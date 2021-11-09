@@ -1,7 +1,9 @@
 <?php
 
 return [
-
+    'config' => [
+            'base_url' => 'BASE_URL',
+    ],
     'referensi' => [
         'jenis_layanan_enviro' => 29,
         'jenis_currency' => 141,

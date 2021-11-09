@@ -190,12 +190,17 @@ class AuthController extends BaseApiController
             'expires_in' => auth()->factory()->getTTL() * 60,
         );
 
+        $config_base_url = Config('constants.config.base_url');
+
+        $base_url = $this->getValueByConfig($config_base_url);
+
         return $this->respond([
             'success' => 1,
             'message' => 'Welcome to MyEnviro',
             'token' => $mytoken,
             'hero' =>$loggedHero,
-            'org' => $organization
+            'org' => $organization,
+            'base_url' => $base_url,
         ]);
 
     }

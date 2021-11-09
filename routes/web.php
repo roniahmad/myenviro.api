@@ -32,7 +32,7 @@ $router->get('/genpass/{key}', function($key) {
 	return json_encode($map);
 });
 
-//Client Auth
+//CLIENT AUTHENTICATION
 $router->group(['prefix' => 'clientauth/v1', 'namespace' => 'Account\V1'], function() use ($router) {
 
     $router->post('login', ['as' => 'clientauth.v1.login', 'uses' => 'ClientAuthController@login']);
@@ -52,7 +52,7 @@ $router->group(['prefix' => 'clientauth/v1', 'namespace' => 'Account\V1'], funct
 });
 
 
-//Account Auth
+//INTERNAL ACCOUNT AUTHENTICATION
 $router->group(['prefix' => 'account/v1', 'namespace' => 'Account\V1'], function() use ($router) {
 
     $router->post('login', ['as' => 'account.v1.login', 'uses' => 'AuthController@login']);
@@ -82,10 +82,6 @@ $router->group(['prefix' => 'cleaning/v1', 'namespace' => 'Cleaning\V1'], functi
     //send me a product offer
     $router->post('sendmeoffer', ['as' => 'cleaning.products.v1.sendmeoffer',
         'uses' => 'ProductController@sendMeOffer']);
-
-        // //upload images detil on Daily Activity Report
-        // $router->post('uploaddailyreportimage', ['as' => 'cleaning.dar.v1.uploaddailyreportimage',
-        //     'uses' => 'DailyReportDetailImagesController@uploadDailyReportImage']);
 
     $router->group(['middleware'=> 'jwt.auth' ], function () use ($router) {
 
