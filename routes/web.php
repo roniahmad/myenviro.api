@@ -18,7 +18,8 @@ $router->get('/', function () use ($router) {
 });
 
 $router->get('/info', function () use ($router) {
-    return phpinfo();
+    // return phpinfo();
+    return "<center><h1>Underconstruction</h1></center>";
 });
 
 $router->get('/genpass/{key}', function($key) {
