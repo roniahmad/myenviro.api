@@ -29,6 +29,15 @@ return [
         'daily_report_added_ok' => 'Daily Report berhasil ditambahkan',
         'daily_report_added_fail' => 'Daily Report gagal ditambahkan',
 
+        'daily_report_recommendation_added_ok' => 'Rekomendasi Daily Report berhasil ditambahkan',
+        'daily_report_recommendation_added_fail' => 'Rekomendasi Daily Report gagal ditambahkan',
+        'daily_report_recommendation_not_found' => 'Rekomendasi Daily Report tidak ditemukan',
+
+
+        'daily_report_feedback_added_ok' => 'Feedback Daily Report berhasil ditambahkan',
+        'daily_report_feedback_added_fail' => 'Feedback Daily Report gagal ditambahkan',
+
+
         'daily_report_deleted_ok' => 'Daily Report berhasil dihapus',
         'daily_report_deleted_fail' => 'Daily Report gagal dihapus',
 

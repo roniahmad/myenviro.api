@@ -100,13 +100,20 @@ $router->group(['prefix' => 'cleaning/v1', 'namespace' => 'Cleaning\V1'], functi
         $router->get('dacbyjosjob', ['as' => 'cleaning.dac.v1.getdailybyjosjobid',
             'uses' => 'DailyActivityController@getDailyByJosJobid']);
 
-        //get Daily Activity Report
+        //get Daily Activity Report Detail
         $router->get('darbyjos', ['as' => 'cleaning.dar.v1.darbyjos',
             'uses' => 'DailyReportController@getDailyReport']);
 
         //get Daily Activity Report
+        $router->get('dacbyidjos', ['as' => 'cleaning.dar.v1.dacbyidjos',
+            'uses' => 'DailyReportController@getDailyActivityReport']);
+
+        //add Daily Activity Report
         $router->post('addnewdar', ['as' => 'cleaning.dar.v1.addnewdar',
             'uses' => 'DailyReportController@addDailyReport']);
+        // add Daily report recommendation
+        $router->post('addnewdarrec', ['as' => 'cleaning.dar.v1.addnewdarrec',
+            'uses' => 'DailyReportController@addDailyReportRecommendation']);
 
         //delete Daily Activity Report
         $router->post('deletedar', ['as' => 'cleaning.dar.v1.deletedar',
@@ -123,6 +130,8 @@ $router->group(['prefix' => 'cleaning/v1', 'namespace' => 'Cleaning\V1'], functi
         //delete Daily Activity Report Image
         $router->post('deletedailyreportimage', ['as' => 'cleaning.dar.v1.deletedailyreportimage',
             'uses' => 'DailyReportDetailImagesController@deleteDailyReportImage']);
+
+
 
     });
 
@@ -143,6 +152,14 @@ $router->group(['prefix' => 'cleaning/client/v1', 'namespace' => 'Cleaning\Clien
 
         $router->get('dailyreportimage', ['as' => 'cleaning.dar.v1.dailyreportimage',
             'uses' => 'DailyReportDetailImagesController@getDailyReportImage']);
+
+        // add Daily report Feedback
+        $router->post('addnewdarfeed', ['as' => 'cleaning.dar.v1.addnewdarfeed',
+            'uses' => 'DailyReportController@addDailyReportFeedback']);
+
+        //get Daily Activity Report
+        $router->get('dacbyidjos', ['as' => 'cleaning.dar.v1.dacbyidjos',
+            'uses' => 'DailyReportController@getDailyActivityReport']);
 
     });
 });

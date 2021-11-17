@@ -182,18 +182,23 @@ class ClientAuthController extends BaseApiController
             'expires_in' => auth()->factory()->getTTL() * 60,
         );
 
+        $config_base_url = Config('constants.config.base_url');
+
+        $base_url = $this->getValueByConfig($config_base_url);
+
         return $this->respond([
-            'success' => 1,
-            'message' => 'Welcome to MyEnviro',
-            'token' => $mytoken,
-            'hero' =>$loggedHero,
-            'org' => $organization
+            'success'  => 1,
+            'message'  => 'Welcome to MyEnviro',
+            'token'    => $mytoken,
+            'hero'     => $loggedHero,
+            'org'      => $organization,
+            'base_url' => $base_url,
         ]);
 
     }
 
     /**
-     * Log the user out (Invalidate the token).
+     * Log the user out (Invalionlinedate the token).
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -205,8 +210,8 @@ class ClientAuthController extends BaseApiController
             // JWTAuth::invalidate($token);
             return $this->respond([
                 'success' => 1,
-                'message'=> 'You have successfully logged out.',
-                'token' => null]);
+                'message' => 'You have successfully logged out.',
+                'token'   => null]);
 
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token

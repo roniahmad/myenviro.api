@@ -35,7 +35,7 @@ class HeroDACController extends BaseApiController
     private $josTransformer;
 
     /**
-     * Create a new ScheduleTreatmentController instance.
+     * Create a new HeroDACController instance.
      *
      * @return void
      */

@@ -18,6 +18,7 @@ use App\Models\Cleaning\V1\DailyReportDetil;
 use App\Models\Cleaning\V1\DailyReport;
 
 use App\Transformers\Cleaning\V1\DailyReportTransformer;
+use App\Transformers\Cleaning\V1\DailyActivityReportTransformer;
 
 use App\Traits\Hero\V1\JosTrait;
 
@@ -40,14 +41,21 @@ class DailyReportController extends BaseApiController
     private $darTransformer;
 
     /**
+    * @var DailyActivityReportTransformer
+    */
+    private $dacTransformer;
+
+
+    /**
      * Create a new ScheduleTreatmentController instance.
      *
      * @return void
      */
-    public function __construct(Manager $fractal, DailyReportTransformer $st)
+    public function __construct(Manager $fractal, DailyReportTransformer $st, DailyActivityReportTransformer $dact)
     {
         $this->fractal = $fractal;
         $this->darTransformer = $st;
+        $this->dacTransformer = $dact;
     }
 
     /**
@@ -127,6 +135,100 @@ class DailyReportController extends BaseApiController
         $report = $this->fractal->createData($report)->toArray(); // Transform data
 
         return $this->respond($report);
+    }
+
+    public function getDailyActivityReport(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'dac_id' => 'required|integer',
+            'jos_id' => 'required|integer',
+        ]);
+
+        if ($validator->fails()){
+            return response()->json([
+                'success' => 0,
+                'message' => $validator->messages()
+            ],422);
+        }
+
+        $id = $request->dac_id;
+        $josid = $request->jos_id;
+        /*
+        select id, jos_id, pegawai_id,tanggal_lapor, deskripsi, rekomendasi,
+        DATE(date_rekomendasi) as tanggal_rekomendasi,
+        TIME(date_rekomendasi) as waktu_rekomendasi,
+        feedback_klien,
+        DATE(date_feedback) as tanggal_feedback,
+        TIME(date_feedback) as waktu_feedback
+        from laporan_dac
+        where id=1 and jos_id =1
+        */
+        $resource = DailyReport::where('id', $id)
+                    ->where('jos_id', $josid)
+                    ->select(
+                        'id', 'jos_id', 'pegawai_id', 'tanggal_lapor', 'deskripsi', 'rekomendasi',
+                        DB::raw('DATE(date_rekomendasi) as tanggal_rekomendasi'),
+                        DB::raw('TIME(date_rekomendasi) as waktu_rekomendasi'),
+                        'feedback_klien',
+                        DB::raw('DATE(date_feedback) as tanggal_feedback'),
+                        DB::raw('TIME(date_feedback) as waktu_feedback')
+                    )
+                    ->get();
+
+        $report = new Collection($resource, $this->dacTransformer);
+        $report = $this->fractal->createData($report)->toArray(); // Transform data
+
+        return $this->respond($report);
+    }
+    
+    public function addDailyReportFeedback(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'dac_id' => 'required|integer',
+            'jos_id' => 'required|integer',
+            'feedback' => 'required|string',
+        ]);
+
+        if ($validator->fails()){
+            return response()->json([
+                'success' => 0,
+                'message' => $validator->messages()
+            ],422);
+        }
+
+        $id = $request->dac_id;
+        $josid = $request->jos_id;
+        $feedback = $request->feedback;
+
+        $today = Carbon::now()->format('Y-m-d H:i:s');
+
+        $recommendation = DailyReport::where('id', $id)->where('jos_id', $josid)
+                          ->select('rekomendasi')->first();
+        if($recommendation && trim($recommendation->rekomendasi)!=""){
+
+            $avDaily = DailyReport::where('id', $id)->where('jos_id', $josid)->update(['feedback_klien'=>$feedback, 'date_feedback'=>$today]);
+
+            if($avDaily>0){
+
+                return $this->respond([
+                    'success' => 1,
+                    'message'=> Config('constants.messages.daily_report_feedback_added_ok')]
+                );
+            }else{
+                return $this->respond([
+                    'success' => 0,
+                    'message'=> Config('constants.messages.daily_report_feedback_added_fail')]
+                );
+            }
+        }else{
+            return $this->respond([
+                'success' => 0,
+                'message'=> Config('constants.messages.daily_report_recommendation_not_found')]
+            );
+        }
+
+
+
     }
 
     public function addDailyReport(Request $request)

@@ -1,9 +1,10 @@
 <?php
+
 namespace App\Models\Cleaning\V1;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DailyReport extends Model
+class JosComplaintQC extends Model
 {
     /**
 	* The table associated with the model.
@@ -11,7 +12,7 @@ class DailyReport extends Model
 	* define here
 	* @var string
 	*/
-    protected $table = "laporan_dac";
+    protected $table = "jos_komplain_qc";
 
     protected $connection = 'db_cleaning';
 
@@ -21,12 +22,8 @@ class DailyReport extends Model
      * @var array
      */
     protected $fillable = [
-        'jos_id',
-        'pegawai_id',
-        'tanggal_lapor',
-        'deskripsi',
-        'rekomendasi',
-        'feedback_klien',
+        'jos_komplain_id',
+        'qc',
     ];
 
     protected $hidden = [
