@@ -69,27 +69,27 @@ class HeroJosController extends BaseApiController
         $today = Carbon::today()->format('Y-m-d');
         $jenis_currency = Config('constants.referensi.jenis_currency');
         $resource = Jos::select(
-                        'jos.id',
-                        'jos.klien_id',
-                        DB::raw('mk.id as client_id'), 
+                        'sales.jos.id',
+                        'sales.jos.klien_id',
+                        DB::raw('mk.id as client_id'),
                         'mk.nama', 'mk.kode',
-                        'jos.no_jos',
-                        DB::raw('jos.currency as currency_code'),
+                        'sales.jos.no_jos',
+                        DB::raw('sales.jos.currency as currency_code'),
                         DB::raw('mr.singkatan as currency'),
-                        'jos.scope_of_work',
-                        'jos.start_date', 'jos.end_date'
+                        'sales.jos.scope_of_work',
+                        'sales.jos.start_date', 'sales.jos.end_date'
                     )
                     ->leftJoin('master.klien as mk', function($join){
-                        $join->On('mk.id','=','jos.klien_id');
+                        $join->On('mk.id','=','sales.jos.klien_id');
                     })
                     ->leftJoin('master.referensi as mr', function($joinMR){
-                        $joinMR->On('mr.id','=','jos.currency');
+                        $joinMR->On('mr.id','=','sales.jos.currency');
                     })
                     ->leftJoin('sales.jos_man_power_detil as jmpd', function($joinJMPD){
-                        $joinJMPD->On('jmpd.jos_id','=','jos.id');
+                        $joinJMPD->On('jmpd.jos_id','=','sales.jos.id');
                     })
                     ->where('jmpd.pegawai_id', $employee)
-                    ->where(DB::raw('NOW()'), '<=', 'jos.end_date')
+                    ->where(DB::raw('NOW()'), '<=', 'sales.jos.end_date')
                     ->where('mr.jenis', $jenis_currency)
                     ->get();
 
