@@ -92,7 +92,7 @@ class HeroJosController extends BaseApiController
                     ->whereDate(DB::raw('NOW()'), '<=', 'sales.jos.end_date')
                     ->where('mr.jenis', $jenis_currency)
                     ->get();
-        dd($resource);
+        
         $jos = new Collection($resource, $this->josTransformer);
         $jos = $this->fractal->createData($jos)->toArray(); // Transform data
 
