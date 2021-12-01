@@ -77,7 +77,7 @@ class JosController extends BaseApiController
         $resource = Jos::select(
                         'jos.id',
                         'jos.klien_id',
-                        DB::raw('mk.id as client_id'), 
+                        DB::raw('mk.id as client_id'),
                         'mk.nama', 'mk.kode',
                         'jos.no_jos',
                         DB::raw('jos.currency as currency_code'),
@@ -92,7 +92,7 @@ class JosController extends BaseApiController
                         $joinMR->On('mr.id','=','jos.currency');
                     })
                     ->where('jos.klien_id', $klien)
-                    ->where(DB::raw('NOW()'), '<=', 'jos.end_date')
+                    ->where('jos.end_date', '>=', $today)
                     ->where('mr.jenis', $jenis_currency)
                     ->get();
 
