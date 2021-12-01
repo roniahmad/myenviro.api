@@ -89,7 +89,7 @@ class HeroJosController extends BaseApiController
                         $joinJMPD->On('jmpd.jos_id','=','sales.jos.id');
                     })
                     ->where('jmpd.pegawai_id', $employee)
-                    ->where(DB::raw('NOW()'), '<=', 'sales.jos.end_date')
+                    ->whereDate(DB::raw('NOW()'), '<=', 'sales.jos.end_date')
                     ->where('mr.jenis', $jenis_currency)
                     ->get();
 
