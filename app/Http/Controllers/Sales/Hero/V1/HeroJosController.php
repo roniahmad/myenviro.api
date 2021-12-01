@@ -72,7 +72,7 @@ class HeroJosController extends BaseApiController
                             $join->On('mk.id','=','sales.jos.klien_id');
                         })
                         ->leftJoin('master.referensi as mr', function($joinMR){
-                            $joinMR->On('mr.id','=','sales.jos.currency');
+                            $joinMR->On('sales.jos.currency','=','mr.id');
                         })
                         ->leftJoin('sales.jos_man_power_detil as jmpd', function($joinJMPD){
                             $joinJMPD->On('jmpd.jos_id','=','sales.jos.id');
@@ -80,7 +80,7 @@ class HeroJosController extends BaseApiController
                     ->select(
                             'sales.jos.id',
                             'sales.jos.klien_id',
-                            'mk.id as client_id',
+                            // 'mk.id as client_id',
                             'mk.nama', 'mk.kode',
                             'sales.jos.no_jos',
                             'sales.jos.currency as currency_code',
