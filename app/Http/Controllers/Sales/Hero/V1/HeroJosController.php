@@ -65,29 +65,29 @@ class HeroJosController extends BaseApiController
         WHERE jmpd.pegawai_id =1
         and NOW() <= sj.end_date
         and mr.jenis =141;
-        */ 
+        */
         $today = Carbon::today()->format('Y-m-d');
         $jenis_currency = Config('constants.referensi.jenis_currency');
-        $resource = Jos::select(
-                        'sales.jos.id',
-                        'sales.jos.klien_id',
-                        DB::raw('mk.id as client_id'),
-                        'mk.nama', 'mk.kode',
-                        'sales.jos.no_jos',
-                        DB::raw('sales.jos.currency as currency_code'),
-                        DB::raw('mr.singkatan as currency'),
-                        'sales.jos.scope_of_work',
-                        'sales.jos.start_date', 'sales.jos.end_date'
+        $resource = Jos::leftJoin('master.klien as mk', function($join){
+                            $join->On('mk.id','=','sales.jos.klien_id');
+                        })
+                        ->leftJoin('master.referensi as mr', function($joinMR){
+                            $joinMR->On('mr.id','=','sales.jos.currency');
+                        })
+                        ->leftJoin('sales.jos_man_power_detil as jmpd', function($joinJMPD){
+                            $joinJMPD->On('jmpd.jos_id','=','sales.jos.id');
+                        })
+                    ->select(
+                            'sales.jos.id',
+                            'sales.jos.klien_id',
+                            'mk.id as client_id',
+                            'mk.nama', 'mk.kode',
+                            'sales.jos.no_jos',
+                            'sales.jos.currency as currency_code',
+                            'mr.singkatan as currency',
+                            'sales.jos.scope_of_work',
+                            'sales.jos.start_date', 'sales.jos.end_date'
                     )
-                    ->leftJoin('master.klien as mk', function($join){
-                        $join->On('mk.id','=','sales.jos.klien_id');
-                    })
-                    ->leftJoin('master.referensi as mr', function($joinMR){
-                        $joinMR->On('mr.id','=','sales.jos.currency');
-                    })
-                    ->leftJoin('sales.jos_man_power_detil as jmpd', function($joinJMPD){
-                        $joinJMPD->On('jmpd.jos_id','=','sales.jos.id');
-                    })
                     ->where('jmpd.pegawai_id', $employee)
                     ->whereDate(DB::raw('NOW()'), '<=', 'sales.jos.end_date')
                     ->where('mr.jenis', $jenis_currency)
