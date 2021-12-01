@@ -89,12 +89,10 @@ class HeroJosController extends BaseApiController
                             'sales.jos.start_date', 'sales.jos.end_date'
                     )
                     ->where('jmpd.pegawai_id', $employee)
-                    // ->where(DB::raw('NOW()'), '<=', 'sales.jos.end_date')
                     ->where('sales.jos.end_date', '>=',$today )
                     ->where('mr.jenis', $jenis_currency)
-                    // ->toSql();
                     ->get();
-        // dd($resource);
+        
         $jos = new Collection($resource, $this->josTransformer);
         $jos = $this->fractal->createData($jos)->toArray(); // Transform data
 
