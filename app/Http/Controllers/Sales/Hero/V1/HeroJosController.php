@@ -65,7 +65,7 @@ class HeroJosController extends BaseApiController
         WHERE jmpd.pegawai_id =1
         and NOW() <= sj.end_date
         and mr.jenis =141;
-        */
+        */ 
         $today = Carbon::today()->format('Y-m-d');
         $jenis_currency = Config('constants.referensi.jenis_currency');
         $resource = Jos::select(

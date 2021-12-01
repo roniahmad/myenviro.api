@@ -9,7 +9,7 @@ class JosTransformer extends TransformerAbstract
     {
         return[
             "id"                    => $s->id,
-            "client_id"                    => $s->client_id,
+            "client_id"                    => $s->klien_id,
             "client_name"           => $s->nama,
             "client_code"           => $s->kode,
             "jos_no"                => $s->no_jos,
