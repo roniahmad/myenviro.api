@@ -12,7 +12,7 @@ class Jos extends Model
 	* define here
 	* @var string
 	*/
-    protected $table = "jos";
+    protected $table = "sales.jos";
 
     protected $connection = 'db_sales';
 
