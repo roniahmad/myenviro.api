@@ -193,6 +193,7 @@ class AuthController extends BaseApiController
         $config_base_url = Config('constants.config.base_url');
 
         $base_url = $this->getValueByConfig($config_base_url);
+        
         $err = array("config"=>$config_base_url, "base_url"=>$base_url);
 
         dd($err);
