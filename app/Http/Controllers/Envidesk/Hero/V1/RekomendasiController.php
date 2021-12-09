@@ -56,7 +56,7 @@ class RekomendasiController extends BaseApiController
         }
 
         $perusahaanid = $request->perusahaan_id;
-        dd($request);
+        
         /*
         use envidesk;
 
