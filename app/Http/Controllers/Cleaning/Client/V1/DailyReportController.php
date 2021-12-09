@@ -180,7 +180,7 @@ class DailyReportController extends BaseApiController
 
         return $this->respond($report);
     }
-    
+
     public function addDailyReportFeedback(Request $request)
     {
         $validator = Validator::make($request->all(),[

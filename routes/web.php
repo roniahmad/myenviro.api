@@ -137,7 +137,7 @@ $router->group(['prefix' => 'cleaning/v1', 'namespace' => 'Cleaning\V1'], functi
 
 });
 
-//CLIENT CLEANING
+//Cleaning Client
 $router->group(['prefix' => 'cleaning/client/v1', 'namespace' => 'Cleaning\Client\V1'], function() use ($router) {
 
     $router->group(['middleware'=> 'jwt.auth' ], function () use ($router) {
@@ -164,6 +164,86 @@ $router->group(['prefix' => 'cleaning/client/v1', 'namespace' => 'Cleaning\Clien
     });
 });
 
+//Envidesk Client
+$router->group(['prefix' => 'envidesk/client/v1', 'namespace' => 'Envidesk\Client\V1'], function() use ($router) {
+    $router->group(['middleware'=> 'jwt.auth' ], function () use ($router) {
+        // -------- Ticket Block ----------
+        //Get available ticket
+        $router->get('getticket', ['as' => 'envidesk.client.v1.getticket',
+            'uses' => 'TicketController@getTicket']);
+        //Get ticket detail
+        $router->get('getticketdetail', ['as' => 'envidesk.client.v1.getticketdetail',
+            'uses' => 'TicketController@getTicketDetail']);
+
+        //Create new ticket
+        $router->post('createticket', ['as' => 'envidesk.client.v1.createticket',
+            'uses' => 'TicketController@createTicket']);
+
+        //Cancel ticket
+        $router->post('cancelticket', ['as' => 'envidesk.client.v1.cancelticket',
+            'uses' => 'TicketController@cancelTicket']);
+
+        //Rate ticket
+        $router->post('rateticket', ['as' => 'envidesk.client.v1.rateticket',
+            'uses' => 'TicketController@rateTicket']);
+
+        // -------- Recomendation --------
+        //Get available recomendation
+        $router->get('getrekomendasi', ['as' => 'envidesk.client.recomendation.v1.getrekomendasi',
+            'uses' => 'RekomendasiController@getRekomendasi']);
+        //Get available recomendation detail
+        $router->get('getrekomendasidetail', ['as' => 'envidesk.client.recomendation.v1.getrekomendasidetail',
+            'uses' => 'RekomendasiController@getRekomendasiDetail']);
+        //Update read recomendation
+        $router->post('updatereadrecomendation', ['as' => 'envidesk.client.recomendation.v1.updatereadrecomendation',
+            'uses' => 'RekomendasiController@updateStatusReadRecomendation']);
+        //Feedback Recomendation
+        $router->post('recomfeedback', ['as' => 'envidesk.client.recomendation.v1.recomfeedback',
+            'uses' => 'RekomendasiController@recomFeedback']);
+    });
+});
+
+//Envidesk Hero
+$router->group(['prefix' => 'envidesk/hero/v1', 'namespace' => 'Envidesk\Hero\V1'], function() use ($router) {
+    $router->group(['middleware'=> 'jwt.auth' ], function () use ($router) {
+        //Get available ticket
+        $router->get('getticket', ['as' => 'envidesk.hero.v1.getticket',
+            'uses' => 'TicketController@getTicket']);
+
+        //Get ticket detail
+        $router->get('getticketdetail', ['as' => 'envidesk.hero.v1.getticketdetail',
+            'uses' => 'TicketController@getTicketDetail']);
+
+        //QC ticket In
+        $router->post('qcticketin', ['as' => 'envidesk.hero.v1.qcticketin',
+            'uses' => 'TicketController@qcTicketIn']);
+        //QC ticket Out
+        $router->post('qcticketout', ['as' => 'envidesk.hero.v1.qcticketout',
+            'uses' => 'TicketController@qcTicketOut']);
+        //Action ticket In
+        $router->post('actionticketin', ['as' => 'envidesk.hero.v1.actionticketin',
+            'uses' => 'TicketController@actionTicketIn']);
+        //Action ticket Out
+        $router->post('actionticketout', ['as' => 'envidesk.hero.v1.actionticketout',
+            'uses' => 'TicketController@actionTicketOut']);
+
+        //Action ticket Out
+        $router->post('updatereadcomplaint', ['as' => 'envidesk.hero.v1.updatereadcomplaint',
+            'uses' => 'TicketController@updateStatusReadComplaint']);
+
+        // -------- Recomendation --------
+        //Get available recomendation
+        $router->get('getrekomendasi', ['as' => 'envidesk.hero.recomendation.v1.getrekomendasi',
+            'uses' => 'RekomendasiController@getRekomendasi']);
+        //Get available recomendation detail
+        $router->get('getrekomendasidetail', ['as' => 'envidesk.hero.recomendation.v1.getrekomendasidetail',
+            'uses' => 'RekomendasiController@getRekomendasiDetail']);
+
+        //Create new recomendation
+        $router->post('createrecomendation', ['as' => 'envidesk.hero.recomendation.v1.createrecomendation',
+            'uses' => 'RekomendasiController@createRecommendation']);
+    });
+});
 
 //Layanan
 $router->group(['prefix' => 'layanan/v1', 'namespace' => 'Layanan\V1'], function() use ($router) {
@@ -256,7 +336,10 @@ $router->group(['prefix' => 'sales/v1', 'namespace' => 'Sales\V1'], function() u
 $router->group(['prefix' => 'master/v1', 'namespace' => 'Master\V1'], function() use ($router) {
 
     $router->group(['middleware'=> 'jwt.auth' ], function () use ($router) {
-        $router->get('referensicleaning', ['as' => 'master.v1.referensi', 'uses' => 'ReferensiController@getReferensiCleaning']);
+        $router->get('referensicleaning', ['as' => 'master.v1.referensi.cleaning', 'uses' => 'ReferensiController@getReferensiCleaning']);
+
+        $router->get('referensihelptopic', ['as' => 'master.v1.referensi.helptopic', 'uses' => 'ReferensiController@getReferensiHelpTopic']);
+
 
     });
 
@@ -267,5 +350,7 @@ $router->group(['prefix' => 'foo', 'namespace' => 'Foo\V1'], function() use ($ro
     $router->get('foo', ['as' => 'foo.bar', 'uses' => 'FooController@index']);
 
     $router->get('test_email' ,['as' => 'foo.mail', 'uses' => 'TestMailController@mail']);
+
+    $router->get('ticketno', ['as' => 'foo.ticketno', 'uses' => 'FooController@genTicketNumber']);
 
 });

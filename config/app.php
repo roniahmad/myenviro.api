@@ -13,9 +13,9 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'PESTCONTROL.API'),
+    'name' => env('APP_NAME', 'MYENVIRO.API'),
 
-    'version' => env('APP_VERSION', '0.0.1'),
+    'version' => env('APP_VERSION', '0.0.3'),
 
     /*
     |--------------------------------------------------------------------------
