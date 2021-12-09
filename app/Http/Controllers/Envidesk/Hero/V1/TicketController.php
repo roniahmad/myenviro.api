@@ -1,4 +1,4 @@
-<?
+<?php
 namespace App\Http\Controllers\Envidesk\Hero\V1;
 
 use Auth;
