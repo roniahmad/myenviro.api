@@ -19,7 +19,9 @@ class TicketTransformer extends TransformerAbstract
             "topik"                  => $s->topik,
             "komplain"               => $s->komplain,
             "gambar_komplain"        => $s->gambar_komplain,
-            "date_qc"          => $s->date_qc,
+            "date_qc"                => $s->date_qc,
+            "date_dibaca"            => $s->date_dibaca,
+            "time_dibaca"            => $s->time_dibaca,
         ];
     }
 }

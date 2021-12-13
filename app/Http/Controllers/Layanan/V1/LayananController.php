@@ -36,7 +36,7 @@ class LayananController extends BaseApiController
      */
     public function __construct(Manager $fractal, LayananTransformer $st)
     {
-        $this->middleware('auth:api', ['except' => ['getLayanan']]);
+        $this->middleware('auth:api', ['except' => ['getLayanan', 'getLayananDetail']]);
         $this->fractal = $fractal;
         $this->layananTransformer = $st;
     }
@@ -55,13 +55,12 @@ class LayananController extends BaseApiController
         where mr.jenis =29
         */
         $jenis_referensi = Config('constants.referensi.jenis_layanan_enviro');
-
         $resource = Layanan::select(
                         'layanan.layanan.id',
                         'layanan.layanan.nama',
-                        'layanan.layanan.deskripsi',
-                        DB::raw('layanan.layanan.jenis_layanan as id_jenis_layanan'),
-                        DB::raw('mr.deskripsi as jenis_layanan'),
+                        DB::raw("CONCAT(LEFT(layanan.layanan.deskripsi, 150),'...') as deskripsi"),
+                        'layanan.layanan.jenis_layanan as id_jenis_layanan',
+                        'mr.deskripsi as jenis_layanan',
                         'layanan.layanan.gambar'
                     )
                     ->leftJoin('master.referensi as mr', function($join){
@@ -76,6 +75,40 @@ class LayananController extends BaseApiController
 
         return $this->respond($services);
 
+    }
+
+    public function getLayananDetail(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'id'=>'required',
+        ]);
+
+        if ($validator->fails()){
+          return response()->json($validator->errors());
+        }
+
+        $id = $request->id;
+
+        $jenis_referensi = Config('constants.referensi.jenis_layanan_enviro');
+        $resource = Layanan::select(
+                        'layanan.layanan.id',
+                        'layanan.layanan.nama',
+                        'layanan.layanan.deskripsi as deskripsi',
+                        'layanan.layanan.jenis_layanan as id_jenis_layanan',
+                        'mr.deskripsi as jenis_layanan',
+                        'layanan.layanan.gambar'
+                    )
+                    ->leftJoin('master.referensi as mr', function($join){
+                        $join->On('layanan.layanan.jenis_layanan','=','mr.id');
+                    })
+                    ->where('mr.jenis',$jenis_referensi)
+                    ->where('layanan.id', $id)
+                    ->get();
+
+        $services = new Collection($resource, $this->layananTransformer);
+        $services = $this->fractal->createData($services)->toArray(); // Transform data
+
+        return $this->respond($services);
     }
 
 }

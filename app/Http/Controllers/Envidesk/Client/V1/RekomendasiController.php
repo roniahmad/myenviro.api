@@ -80,7 +80,9 @@ class RekomendasiController extends BaseApiController
                         DB::raw('DATE(envidesk.rekomendasi.tanggal_rekomendasi) as date_rekomendasi'),
                         DB::raw('TIME(envidesk.rekomendasi.tanggal_rekomendasi) as time_rekomendasi'),
                         DB::raw("CONCAT(LEFT(envidesk.rekomendasi.rekomendasi,150),'...') as rekomendasi"),
-                        'envidesk.rekomendasi.gambar_rekomendasi','envidesk.rekomendasi.closed'
+                        'envidesk.rekomendasi.gambar_rekomendasi','envidesk.rekomendasi.closed',
+                        DB::raw('DATE(envidesk.rekomendasi.rekomendasi_dibaca) as date_dibaca'),
+                        DB::raw('TIME(envidesk.rekomendasi.rekomendasi_dibaca) as time_dibaca')
                     )
                     ->where('envidesk.rekomendasi.klien_id', $klien_id)->get();
 

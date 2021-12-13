@@ -202,7 +202,9 @@ class TicketController extends BaseApiController
                         DB::raw('mr.deskripsi as topik'),
                         DB::raw("CONCAT(LEFT(envidesk.tiket.komplain,150),'...') as komplain"),
                         'envidesk.tiket.gambar_komplain',
-                        DB::raw('DATE(envidesk.tiket.tanggal_in_qc) as date_qc')
+                        DB::raw('DATE(envidesk.tiket.tanggal_in_qc) as date_qc'),
+                        DB::raw('DATE(envidesk.tiket.komplain_dibaca) as date_dibaca'),
+                        DB::raw('TIME(envidesk.tiket.komplain_dibaca) as time_dibaca')
                     )
                     ->where('sj.perusahaan_id', $perusahaanid)
                     ->where('mr.jenis', $jenis_help_topic)

@@ -56,7 +56,7 @@ class RekomendasiController extends BaseApiController
         }
 
         $perusahaanid = $request->perusahaan_id;
-        
+
         /*
         use envidesk;
 
@@ -88,7 +88,9 @@ class RekomendasiController extends BaseApiController
                         'envidesk.rekomendasi.gambar_rekomendasi',
                         DB::raw('DATE(envidesk.rekomendasi.tanggal_closed) as date_closed'),
                         DB::raw('TIME(envidesk.rekomendasi.tanggal_closed) as time_closed'),
-                        'envidesk.rekomendasi.closed'
+                        'envidesk.rekomendasi.closed',
+                        DB::raw('DATE(envidesk.rekomendasi.rekomendasi_dibaca) as date_dibaca'),
+                        DB::raw('TIME(envidesk.rekomendasi.rekomendasi_dibaca) as time_dibaca')
                     )
                     ->where('sj.perusahaan_id', $perusahaanid)->get();
 

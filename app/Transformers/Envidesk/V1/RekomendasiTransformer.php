@@ -19,6 +19,8 @@ class RekomendasiTransformer extends TransformerAbstract
             "closed"                    => $s->closed,
             "date_closed"               => $s->date_closed,
             "time_closed"               => $s->time_closed,
+            "date_dibaca"               => $s->date_dibaca,
+            "time_dibaca"               => $s->time_dibaca,
         ];
     }
 }
