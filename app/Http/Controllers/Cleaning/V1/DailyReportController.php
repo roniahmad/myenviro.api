@@ -124,8 +124,8 @@ class DailyReportController extends BaseApiController
                     ->where('ld.tanggal_lapor', $dateReport)
                     ->where('mr.jenis', $jpc)
                     // ->where('sj.klien_id', $clientId)
-                    ->orderBy('laporan_dac_detil.mulai', 'ASC')
-                    ->orderBy('laporan_dac_detil.selesai', 'ASC')
+                    // ->orderBy('laporan_dac_detil.mulai', 'ASC')
+                    // ->orderBy('laporan_dac_detil.selesai', 'ASC')
                     ->get();
 
         $report = new Collection($resource, $this->darTransformer);
