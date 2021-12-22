@@ -101,10 +101,10 @@ class DailyReportController extends BaseApiController
                         'laporan_dac_detil.id',
                         'ld.tanggal_lapor',
                         'laporan_dac_detil.laporan_dac_id',
-                        DB::raw('laporan_dac_detil.jenis_pekerjaan_cleaning as jp_id'),
-                        DB::raw('mr.deskripsi as jenis_pekerjaan'),
-                        DB::raw('laporan_dac_detil.jos_area_id as joi'),
-                        DB::raw('kap.nama as area'),
+                        'laporan_dac_detil.jenis_pekerjaan_cleaning as jp_id',
+                        'mr.deskripsi as jenis_pekerjaan',
+                        'laporan_dac_detil.jos_area_id as joi',
+                        'kap.nama as area',
                         'laporan_dac_detil.mulai',
                         'laporan_dac_detil.selesai',
                         'laporan_dac_detil.pekerjaan',
@@ -116,19 +116,18 @@ class DailyReportController extends BaseApiController
                     ->leftJoin('master.referensi as mr', function($joinMR){
                         $joinMR->On('mr.id','=','laporan_dac_detil.jenis_pekerjaan_cleaning');
                     })
-                    ->leftJoin('sales.jos as sj', function($joinSJ){
-                        $joinSJ->On('sj.id','=','ld.jos_id');
+                    ->leftJoin('cleaning.jos_area as ja', function($joinSJ){
+                        $joinSJ->On('ja.id','=','laporan_dac_detil.jos_area_id');
                     })
                     ->leftJoin('master.klien_area_pelayanan as kap', function($joinKAP){
-                        $joinKAP->On('kap.id','=','laporan_dac_detil.jos_area_id');
+                        $joinKAP->On('kap.id','=','ja.area_id');
                     })
                     ->where('ld.jos_id', $josId)
-                    // ->where('ld.tanggal_lapor', $dateReport)
                     ->where('ld.tanggal_lapor', $dateReport)
                     ->where('mr.jenis', $jpc)
                     ->where('sj.klien_id', $clientId)
+                    ->orderBy('ld.tanggal_lapor', 'ASC')
                     ->orderBy('laporan_dac_detil.mulai', 'ASC')
-                    ->orderBy('laporan_dac_detil.selesai', 'ASC')
                     ->get();
 
         $report = new Collection($resource, $this->darTransformer);
