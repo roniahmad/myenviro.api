@@ -99,10 +99,10 @@ class DailyReportController extends BaseApiController
                         'laporan_dac_detil.id',
                         'ld.tanggal_lapor',
                         'laporan_dac_detil.laporan_dac_id',
-                        DB::raw('laporan_dac_detil.jenis_pekerjaan_cleaning as jp_id'),
-                        DB::raw('mr.deskripsi as jenis_pekerjaan'),
-                        DB::raw('laporan_dac_detil.jos_area_id as joi'),
-                        DB::raw('kap.nama as area'),
+                        'laporan_dac_detil.jenis_pekerjaan_cleaning as jp_id',
+                        'mr.deskripsi as jenis_pekerjaan',
+                        'laporan_dac_detil.jos_area_id as joi',
+                        'kap.nama as area',
                         'laporan_dac_detil.mulai',
                         'laporan_dac_detil.selesai',
                         'laporan_dac_detil.pekerjaan',
@@ -124,8 +124,8 @@ class DailyReportController extends BaseApiController
                     ->where('ld.tanggal_lapor', $dateReport)
                     ->where('mr.jenis', $jpc)
                     // ->where('sj.klien_id', $clientId)
-                    // ->orderBy('laporan_dac_detil.mulai', 'ASC')
-                    // ->orderBy('laporan_dac_detil.selesai', 'ASC')
+                    ->orderBy('ld.tanggal_lapor', 'ASC')
+                    ->orderBy('laporan_dac_detil.mulai', 'ASC')
                     ->get();
 
         $report = new Collection($resource, $this->darTransformer);
