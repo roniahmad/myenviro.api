@@ -119,8 +119,11 @@ class DailyReportController extends BaseApiController
                     ->leftJoin('sales.jos as sj', function($joinSJ){
                         $joinSJ->On('sj.id','=','ld.jos_id');
                     })
+                    ->leftJoin('cleaning.jos_area as ja', function($joinSJA){
+                        $joinSJA->On('ja.id','=','laporan_dac_detil.jos_area_id');
+                    })
                     ->leftJoin('master.klien_area_pelayanan as kap', function($joinKAP){
-                        $joinKAP->On('kap.id','=','laporan_dac_detil.jos_area_id');
+                        $joinKAP->On('kap.id','=','ja.area_id');
                     })
                     ->where('ld.jos_id', $josId)
                     // ->where('ld.tanggal_lapor', $dateReport)
