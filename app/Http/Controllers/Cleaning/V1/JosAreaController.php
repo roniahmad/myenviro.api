@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Cleaning\V1;
 
 use Auth;
 use Illuminate\Http\Request;
+use Validator;
 use DB;
 use Config;
 
@@ -47,20 +48,25 @@ class JosAreaController extends BaseApiController
      */
     public function getAreaByJosId(Request $request)
     {
+        $validator = Validator::make($request->all(),[
+            'jos_id'=>'required',
+        ]);
+
+        if ($validator->fails()){
+          return response()->json($validator->errors());
+        }
 
         /*
         select psa.id, psa.area_id , kap.nama, mr.deskripsi
         from cleaning.jos_area psa
-        left join sales.jos ps on (ps.id=psa.jos_id)
         left join master.klien_area_pelayanan kap on (kap.id=psa.area_id)
         left join master.referensi mr on (mr.id=psa.io)
-        where psa.jos_id =1 and mr.jenis=24
+        where psa.jos_id =25 and mr.jenis=24
         */
+
         $jenis_inside_outside = Config('constants.referensi.jenis_inside_outside');
         $josId = $request->jos_id;
-        $resource = JosArea::leftJoin('sales.jos as ps', function($joinPSP){
-                        $joinPSP->on('ps.id','=','jos_area.jos_id');
-                    })->leftJoin('master.klien_area_pelayanan as kap', function($joinPS){
+        $resource = JosArea::leftJoin('master.klien_area_pelayanan as kap', function($joinPS){
                         $joinPS->on('kap.id','=','jos_area.area_id');
                     })->leftJoin('master.referensi as mr', function($joinMR){
                         $joinMR->on('mr.id','=','jos_area.io');
