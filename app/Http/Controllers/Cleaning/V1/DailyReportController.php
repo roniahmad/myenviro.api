@@ -121,10 +121,9 @@ class DailyReportController extends BaseApiController
                         $joinKAP->On('kap.id','=','ja.area_id');
                     })
                     ->where('ld.jos_id', $josId)
-                    // ->where('ld.tanggal_lapor', $dateReport)
                     ->where('ld.tanggal_lapor', $dateReport)
                     ->where('mr.jenis', $jpc)
-                    ->where('sj.klien_id', $clientId)
+                    // ->where('sj.klien_id', $clientId)
                     ->orderBy('laporan_dac_detil.mulai', 'ASC')
                     ->orderBy('laporan_dac_detil.selesai', 'ASC')
                     ->get();
