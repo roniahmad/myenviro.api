@@ -86,12 +86,11 @@ class DailyReportController extends BaseApiController
         from cleaning.laporan_dac_detil ldd
         left join cleaning.laporan_dac ld on (ld.id=ldd.laporan_dac_id)
         left join master.referensi mr on (mr.id=ldd.jenis_pekerjaan_cleaning)
-        LEFT join sales.jos sj on (ld.jos_id=sj.id)
-        left join master.klien_area_pelayanan kap on (kap.id=ldd.jos_area_id)
-        where ld.jos_id =1
-        and ld.tanggal_lapor ='2021-09-29'
+        left join cleaning.jos_area ja on (ja.id=ldd.jos_area_id)
+        left join master.klien_area_pelayanan kap on (kap.id=ja.area_id)
+        where ld.jos_id =25
+        and ld.tanggal_lapor ='2021-12-22'
         and mr.jenis =31
-        and sj.klien_id ='e9b02594-6b45-46ce-bd8c-596019a6d5f8'
         */
         // $dateReport = Carbon::today()->format('Y-m-d');
         $jpc = Config('constants.referensi.jenis_pekerjaan_cleaning');
@@ -115,11 +114,11 @@ class DailyReportController extends BaseApiController
                     ->leftJoin('master.referensi as mr', function($joinMR){
                         $joinMR->On('mr.id','=','laporan_dac_detil.jenis_pekerjaan_cleaning');
                     })
-                    ->leftJoin('sales.jos as sj', function($joinSJ){
-                        $joinSJ->On('sj.id','=','ld.jos_id');
+                    ->leftJoin('cleaning.jos_area as ja', function($joinSJ){
+                        $joinSJ->On('ja.id','=','laporan_dac_detil.jos_area_id');
                     })
                     ->leftJoin('master.klien_area_pelayanan as kap', function($joinKAP){
-                        $joinKAP->On('kap.id','=','laporan_dac_detil.jos_area_id');
+                        $joinKAP->On('kap.id','=','ja.area_id');
                     })
                     ->where('ld.jos_id', $josId)
                     // ->where('ld.tanggal_lapor', $dateReport)
