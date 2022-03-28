@@ -19,6 +19,9 @@ return [
         'jenis_pekerjaan_cleaning' => 31,
         'jenis_help_topic' => 35,
         'jenis_currency' => 141,
+        'jenis_treatment' => 23,
+        'jenis_merk_dagang' => 39,
+        'jenis_status_kondisi_barang' => 10,
     ],
 
     'upload_dir' => [
@@ -65,6 +68,23 @@ return [
 
         'envidesk_qc_ok' => 'Quality Check berhasil ditambahkan',
         'envidesk_qc_fail' => 'Quality Check gagal ditambahkan',
+
+        'pestcontrol_sts_added_ok' => 'STS berhasil ditambahkan',
+        'pestcontrol_sts_added_fail' => 'STS gagal ditambahkan',
+        'pestcontrol_sts_slipnumber_fail'=>'No Slip Number Tidak Boleh Sama',
+
+        'pestcontrol_sts_detail_added_ok' => 'STS Detail berhasil ditambahkan',
+        'pestcontrol_sts_detail_added_fail' => 'STS Detail gagal ditambahkan',
+
+        'pestcontrol_installation_added_ok' => 'Instalasi Monitoring berhasil ditambahkan',
+        'pestcontrol_installation_added_fail' => 'Instalasi Monitoring gagal ditambahkan',
+
+        'pestcontrol_monitoring_update_ok' => 'Monitoring berhasil terupdate',
+        'pestcontrol_monitoring_update_fail' => 'Monitoring gagal terupdate',
+        'pestcontrol_monitoring_tanggal_monitoring_fail'=>'Tanggal Monitoring Unit Ini Sudah Tersedia, Tidak Boleh Sama',
+
+        'pestcontrol_monitoring_delete_ok' => 'Monitoring berhasil dihapus',
+        'pestcontrol_monitoring_delete_fail' => 'Monitoring gagal dihapus',
 
         'daily_report_added_ok' => 'Daily Report berhasil ditambahkan',
         'daily_report_added_fail' => 'Daily Report gagal ditambahkan',

@@ -245,45 +245,17 @@ $router->group(['prefix' => 'envidesk/hero/v1', 'namespace' => 'Envidesk\Hero\V1
     });
 });
 
-//Layanan
-$router->group(['prefix' => 'layanan/v1', 'namespace' => 'Layanan\V1'], function() use ($router) {
-    $router->get('layanan', ['as' => 'layanan.v1.layanan', 'uses' => 'LayananController@getLayanan']);
-    $router->get('product_layanan', ['as' => 'layanan.v1.product_layanan', 'uses' => 'ProdukLayananController@getProdukLayanan']);
+//Inventory
+$router->group(['prefix' => 'inventory/v1', 'namespace' => 'Inventory\V1'], function() use ($router) {
 
-    $router->group(['middleware'=> 'jwt.auth' ], function () use ($router) {
+     $router->group(['middleware'=> 'jwt.auth' ], function () use ($router) {
+        //get Produk by Perusahaan Id
+        $router->get('getproduk', ['as' => 'inventory.produk.v1.getproduk',
+            'uses' => 'ProdukController@getProdukByPerusahaanId']);
 
-    });
-
-});
-
-//Pestcontrol
-$router->group(['prefix' => 'pestcontrol/v1', 'namespace' => 'Pestcontrol\V1'], function() use ($router) {
-
-    //get products
-    $router->get('product', ['as' => 'pestcontrol.products.v1.getproducts',
-        'uses' => 'ProductController@getProduct']);
-
-    //send me a product offer
-    $router->post('sendmeoffer', ['as' => 'pestcontrol.products.v1.sendmeoffer',
-        'uses' => 'ProductController@sendMeOffer']);
-
-    $router->group(['middleware'=> 'jwt.auth' ], function () use ($router) {
-
-        //get scheduled Treatment
-        $router->get('schedulestreatment', ['as' => 'pestcontrol.schedulestreatment.v1.getschedulestreatment',
-            'uses' => 'ScheduleTreatmentController@getSchedulesTreatment']);
-        //get tehcnicians by schedule id
-        $router->get('techniciansbyschedule', ['as' => 'pestcontrol.schedulestreatment.v1.gettechniciansbyschedule',
-            'uses' => 'ScheduleTreatmentController@getTechniciansBySchedulesTreatmentId']);
-        //get Spp by id
-        $router->get('sppbyid', ['as' => 'pestcontrol.spp.v1.getsppbyid',
-            'uses' => 'SppController@getSppById']);
-        //get Area By Spp Id
-        $router->get('areabysppid', ['as' => 'pestcontrol.spparea.v1.getareabysppid',
-            'uses' => 'SppAreaController@getAreaBySppId']);
-        //get Hama By Spp Id
-        $router->get('hamabysppid', ['as' => 'pestcontrol.spphama.v1.gethamabysppid',
-            'uses' => 'SppHamaController@getHamaBySppId']);
+         //get Dosis
+         $router->get('getdosis', ['as' => 'inventory.dosis.v1.getdosis',
+         'uses' => 'DosisController@getDosis']);  
 
     });
 });
@@ -308,6 +280,139 @@ $router->group(['prefix' => 'sales/hero/v1', 'namespace' => 'Sales\Hero\V1'], fu
         //get JOS by Employee Id
         $router->get('josbyemployee', ['as' => 'sales.jos.v1.josbyemployee',
             'uses' => 'HeroJosController@getJosByEmployeeId']);
+
+        $router->get('josklienbyemployee', ['as' => 'sales.jos.v1.josnamaklientbyemployee',
+            'uses' => 'HeroJosController@getJosKlienByEmployeeId']);
+
+        //get JOS Man Power Detail by Jos Id
+        $router->get('jmpdbyjosid', ['as' => 'sales.hero.jmpd.v1.jmpdbyjosid',
+            'uses' => 'HeroJosManPowerController@getJosMPDByJosId']);
+
+    });
+});
+
+//Layanan
+$router->group(['prefix' => 'layanan/v1', 'namespace' => 'Layanan\V1'], function() use ($router) {
+    $router->get('layanan', ['as' => 'layanan.v1.layanan', 'uses' => 'LayananController@getLayanan']);
+    $router->get('product_layanan', ['as' => 'layanan.v1.product_layanan', 'uses' => 'ProdukLayananController@getProdukLayanan']);
+
+    $router->group(['middleware'=> 'jwt.auth' ], function () use ($router) {
+
+    });
+
+});
+
+//Pestcontrol
+$router->group(['prefix' => 'pestcontrol/v1', 'namespace' => 'Pestcontrol\V1'], function() use ($router) {
+
+    //get products
+    $router->get('product', ['as' => 'pestcontrol.products.v1.getproducts',
+        'uses' => 'ProductController@getProduct']);
+
+    //send me a product offer
+    $router->post('sendmeoffer', ['as' => 'pestcontrol.products.v1.sendmeoffer',
+        'uses' => 'ProductController@sendMeOffer']);
+    
+  
+
+    $router->group(['middleware'=> 'jwt.auth' ], function () use ($router) {
+
+        //get scheduled Treatment
+        $router->get('schedulestreatment', ['as' => 'pestcontrol.schedulestreatment.v1.getschedulestreatment',
+            'uses' => 'ScheduleTreatmentController@getSchedulesTreatment']);
+        //get tehcnicians by schedule id
+        $router->get('techniciansbyschedule', ['as' => 'pestcontrol.schedulestreatment.v1.gettechniciansbyschedule',
+            'uses' => 'ScheduleTreatmentController@getTechniciansBySchedulesTreatmentId']);
+        //get Spp by id
+        $router->get('sppbyid', ['as' => 'pestcontrol.spp.v1.getsppbyid',
+            'uses' => 'SppController@getSppById']);
+        //get Area By Spp Id
+        $router->get('areabysppid', ['as' => 'pestcontrol.spparea.v1.getareabysppid',
+            'uses' => 'SppAreaController@getAreaBySppId']);
+        //get Hama By Spp Id
+        $router->get('hamabysppid', ['as' => 'pestcontrol.spphama.v1.gethamabysppid',
+            'uses' => 'SppHamaController@getHamaBySppId']);
+        //get Jadwal Pelayanan
+        $router->get('getpelayanan', ['as' => 'pestcontrol.pelayanan.v1.getpelayanan',
+            'uses' => 'PelayananController@getPelayanan']);
+        //Get STS
+        $router->get('getsts', ['as' => 'pestcontrol.sts.v1.getsts',
+        'uses' => 'StsController@getSTS']);
+        //Get STS Detail
+        $router->get('getstsdetail', ['as' => 'pestcontrol.sts.v1.getstsdetail',
+        'uses' => 'StsController@getSTSDetail']);
+        //Create STS
+        $router->post('creatests', ['as' => 'pestcontrol.sts.v1.creatests',
+            'uses' => 'StsController@createSTS']);
+        //Cretae STS Detail
+        $router->post('createstsdetail', ['as' => 'pestcontrol.sts.v1.createstsdetail',
+            'uses' => 'StsController@createSTSDetail']);    
+        //Get Area by Jos
+        $router->get('areabyjosid', ['as' => 'pestcontrol.josarea.v1.getareabyjosid',
+            'uses' => 'JosAreaController@getAreaByJosId']);
+        //Get Bahan Aktif
+        $router->get('bahanaktif', ['as' => 'pestcontrol.bahanaktif.v1.getbahanaktif',
+            'uses' => 'StsController@getBahanAktif']);
+        //Get Monitoring
+        $router->get('getmonitoring', ['as' => 'pestcontrol.monitoring.v1.getmonitoring',
+            'uses' => 'JosMonitoringHamaController@getMonitoring']);
+        //Get Monitoring By Id
+        $router->get('getmonitoringbyid', ['as' => 'pestcontrol.monitoring.v1.getmonitoringbyid',
+        'uses' => 'JosMonitoringHamaController@getMonitoringById']);
+        //Get Installattion
+        $router->get('getinstallation', ['as' => 'pestcontrol.installation.v1.getinstallation',
+        'uses' => 'JosMonitoringHamaController@getInstallation']);
+        //Post InstallationMonitoring
+        $router->post('createinstalasimonitoring', ['as' => 'pestcontrol.installationmonitoring.v1.createinstalasimonitoring',
+        'uses' => 'JosMonitoringHamaController@createInstallationMonitoring']);
+        //Post Installation
+        $router->post('createinstallation', ['as' => 'pestcontrol.installation.v1.createinstallation',
+        'uses' => 'JosMonitoringHamaController@createInstallation']);
+        //Post Monitoring
+        $router->post('createmonitoring', ['as' => 'pestcontrol.monitoring.v1.createmonitoring',
+        'uses' => 'JosMonitoringHamaController@createMonitoringHama']);
+        //Get Nounit
+        $router->get('getnounit', ['as' => 'pestcontrol.nounit.v1.getnounit',
+        'uses' => 'JosMonitoringHamaController@getNoUnit']);
+        //Update Jumlah Hama
+        $router->post('edithama', ['as' => 'pestcontrol.edit.v1.edithama',
+        'uses' => 'JosMonitoringHamaController@updateHama']);
+        //Delete Jumlah Hama
+        $router->post('deletehama', ['as' => 'pestcontrol.delete.v1.deletehama',
+        'uses' => 'JosMonitoringHamaController@deleteHama']);
+        //Get Tanggal Monitoring
+        $router->get('gettglmonitoring', ['as' => 'pestcontrol.tglmonitoring.v1.gettglmonitoring',
+        'uses' => 'JosMonitoringHamaController@getTanggalMonitoring']);
+        //Get Tanggal Monitoring Detail
+        $router->get('gettglmonitoringdetail', ['as' => 'pestcontrol.tglmonitoringdetail.v1.gettglmonitoringdetail',
+        'uses' => 'JosMonitoringHamaController@getTanggalMonitoringDetail']);
+
+    });
+});
+
+//Sales
+$router->group(['prefix' => 'sales/v1', 'namespace' => 'Sales\V1'], function() use ($router) {
+
+    $router->group(['middleware'=> 'jwt.auth' ], function () use ($router) {
+
+        //get JOS by client
+        $router->get('josbyclient', ['as' => 'sales.jos.v1.josbyclient',
+            'uses' => 'JosController@getJosByClient']);
+
+    });
+});
+
+//Hero Sales
+$router->group(['prefix' => 'sales/hero/v1', 'namespace' => 'Sales\Hero\V1'], function() use ($router) {
+
+    $router->group(['middleware'=> 'jwt.auth' ], function () use ($router) {
+
+        //get JOS by Employee Id
+        $router->get('josbyemployee', ['as' => 'sales.jos.v1.josbyemployee',
+            'uses' => 'HeroJosController@getJosByEmployeeId']);
+
+        $router->get('josklienbyemployee', ['as' => 'sales.jos.v1.josnamaklientbyemployee',
+            'uses' => 'HeroJosController@getJosKlienByEmployeeId']);
 
         //get JOS Man Power Detail by Jos Id
         $router->get('jmpdbyjosid', ['as' => 'sales.hero.jmpd.v1.jmpdbyjosid',
@@ -340,7 +445,7 @@ $router->group(['prefix' => 'master/v1', 'namespace' => 'Master\V1'], function()
 
         $router->get('referensihelptopic', ['as' => 'master.v1.referensi.helptopic', 'uses' => 'ReferensiController@getReferensiHelpTopic']);
 
-
+        $router->get('referensitreatment', ['as' => 'master.v1.referensi.treatment', 'uses' => 'ReferensiController@getReferensiTreatment']);
     });
 
 });
@@ -354,3 +459,11 @@ $router->group(['prefix' => 'foo', 'namespace' => 'Foo\V1'], function() use ($ro
     $router->get('ticketno', ['as' => 'foo.ticketno', 'uses' => 'FooController@genTicketNumber']);
 
 });
+// // $router->post('addsts','Pestcontrol\V1\StsController@createSTS');
+// $router->get('getallsts','Pestcontrol\V1\StsController@getAllSTS');
+// $router->get('getsts/{id}','Pestcontrol\V1\StsController@getSTSId');
+// $router->get('getpelayanan','Pestcontrol\V1\PelayananController@getPelayanan');
+// $router->get('getproduk','Inventory\V1\ProdukController@getProdukByPerusahaanId');
+// $router->get('getmonitoring','Pestcontrol\V1\JosMonitoringHamaController@getMonitoringHama');
+
+

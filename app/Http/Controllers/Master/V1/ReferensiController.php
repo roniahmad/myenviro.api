@@ -77,5 +77,19 @@ class ReferensiController extends BaseApiController
         return $this->respond($products);
     }
 
+    public function getReferensiTreatment()
+    {
+        $jenis = Config('constants.referensi.jenis_treatment');
+        $resource = Referensi::select(
+            'id','deskripsi'
+                    )
+                    ->where('jenis', $jenis)
+                    ->get();
+        $products = new Collection($resource, $this->referensiTransformer);
+        $products = $this->fractal->createData($products)->toArray(); // Transform data
+
+        return $this->respond($products);
+    }
+
 
 }
