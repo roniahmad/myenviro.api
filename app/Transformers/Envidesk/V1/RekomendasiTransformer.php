@@ -10,6 +10,7 @@ class RekomendasiTransformer extends TransformerAbstract
         return[
             "id"                        => $s->id,
             "nomor_rekomendasi"         => $s->nomor_rekomendasi,
+            "nama_klient"               => $s->nama_klient,
             "no_jos"                    => $s->no_jos,
             "nama"                      => $s->nama,
             "date_rekomendasi"          => $s->date_rekomendasi,

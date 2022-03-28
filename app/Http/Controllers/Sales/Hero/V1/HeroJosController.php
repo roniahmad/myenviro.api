@@ -15,6 +15,8 @@ use App\Models\Sales\V1\Jos;
 
 use App\Transformers\Jos\V1\JosTransformer;
 
+use App\Transformers\Jos\V1\JosByKlienTransformer;
+
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
@@ -31,15 +33,22 @@ class HeroJosController extends BaseApiController
      */
     private $josTransformer;
 
+        /**
+     * @var JosByKlienTransformer
+     */
+    private $josByKlienTransformer;
+
     /**
      * Create a new ScheduleTreatmentController instance.
      *
      * @return void
      */
-    public function __construct(Manager $fractal, JosTransformer $st)
+    public function __construct(Manager $fractal, JosTransformer $st, JosByKlienTransformer $sk)
     {
         $this->fractal = $fractal;
         $this->josTransformer = $st;
+        $this->josByKlienTransformer = $sk;
+
     }
 
     public function getJosByEmployeeId(Request $request)
@@ -86,6 +95,7 @@ class HeroJosController extends BaseApiController
                             'sales.jos.currency as currency_code',
                             'mr.singkatan as currency',
                             'sales.jos.scope_of_work',
+                            'sales.jos.billing_contact',
                             'sales.jos.start_date', 'sales.jos.end_date'
                     )
                     ->where('jmpd.pegawai_id', $employee)
@@ -101,5 +111,46 @@ class HeroJosController extends BaseApiController
 
     }
 
+     public function getJosKlienByEmployeeId(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'employee_id'=>'required',
+        ]);
+
+        if ($validator->fails()) {
+          return response()->json($validator->errors());
+        }
+
+        $employee = $request->employee_id;
+        /*
+        SELECT  kk.id , kk.nama as nama_klien
+		    from sales.jos sj
+		    left join master.klien kk on (kk.id =sj .klien_id)
+		    LEFT JOIN sales.jos_man_power_detil jmpd on (jmpd.jos_id=sj.id)
+		    WHERE jmpd.pegawai_id =1
+        */
+        $today = Carbon::today()->format('Y-m-d');
+        $jenis_currency = Config('constants.referensi.jenis_currency');
+        $resource = Jos::leftJoin('master.klien as mk', function($joinMK){
+                            $joinMK->On('mk.id','=','sales.jos.klien_id');
+                        })
+                        ->leftJoin('sales.jos_man_power_detil as jmpd', function($joinJMPD){
+                            $joinJMPD->On('jmpd.jos_id','=','sales.jos.id');
+                        })
+                    ->select(
+                            'sales.jos.klien_id',
+                            'mk.nama'
+                    )
+                    ->where('jmpd.pegawai_id', $employee)
+                    ->whereNull('jmpd.deleted_at')
+                    ->where('sales.jos.end_date', '>=',$today )
+                    ->get();
+
+        $jos = new Collection($resource, $this->josByKlienTransformer);
+        $jos = $this->fractal->createData($jos)->toArray(); // Transform data
+
+        return $this->respond($jos);
+
+    }
 
 }

@@ -71,9 +71,17 @@ class RekomendasiController extends BaseApiController
         left join master.pegawai kp on (kp.id=et.pic_perusahaan)
         where sj.perusahaan_id = 'e9b02594-6b45-46ce-bd8c-596019a6d5f8'
         */
+        if ($request->has('employee_id')){
+            $employee = $request->employee_id;
 
         $resource = Rekomendasi::leftJoin('sales.jos as sj', function($joinSJ){
                         $joinSJ->On('envidesk.rekomendasi.jos_id','=','sj.id');
+                    })
+                    ->leftJoin('sales.jos_man_power_detil as jmpd', function($joinJMPD){
+                        $joinJMPD->On('jmpd.jos_id','=','sj.id');
+                    })
+                    ->leftJoin('master.klien as kk', function($joinKK){
+                        $joinKK->On('envidesk.rekomendasi.klien_id','=','kk.id');
                     })
                     ->leftJoin('master.pegawai as kp', function($joinKP){
                         $joinKP->On('envidesk.rekomendasi.pic_perusahaan','=','kp.id');
@@ -81,6 +89,7 @@ class RekomendasiController extends BaseApiController
                     ->select(
                         'envidesk.rekomendasi.id',
                         'envidesk.rekomendasi.nomor_rekomendasi',
+                        'kk.nama as nama_klient',
                         'sj.no_jos','kp.nama',
                         DB::raw('DATE(envidesk.rekomendasi.tanggal_rekomendasi) as date_rekomendasi'),
                         DB::raw('TIME(envidesk.rekomendasi.tanggal_rekomendasi) as time_rekomendasi'),
@@ -92,8 +101,46 @@ class RekomendasiController extends BaseApiController
                         DB::raw('DATE(envidesk.rekomendasi.rekomendasi_dibaca) as date_dibaca'),
                         DB::raw('TIME(envidesk.rekomendasi.rekomendasi_dibaca) as time_dibaca')
                     )
-                    ->where('sj.perusahaan_id', $perusahaanid)->get();
+                    ->where('sj.perusahaan_id', $perusahaanid)
+                    ->where('jmpd.pegawai_id', $employee);
 
+                    if($request->has('client_id')){
+                        $resource = $resource->where('kk.id', $request->client_id);
+                    }
+                    
+                    $resource = $resource->get();
+                        
+
+        }else {
+            $resource = Rekomendasi::leftJoin('sales.jos as sj', function($joinSJ){
+                $joinSJ->On('envidesk.rekomendasi.jos_id','=','sj.id');
+            })
+            ->leftJoin('sales.jos_man_power_detil as jmpd', function($joinJMPD){
+                $joinJMPD->On('jmpd.jos_id','=','sj.id');
+            })
+            ->leftJoin('master.klien as kk', function($joinKK){
+                $joinKK->On('envidesk.rekomendasi.klien_id','=','kk.id');
+            })
+            ->leftJoin('master.pegawai as kp', function($joinKP){
+                $joinKP->On('envidesk.rekomendasi.pic_perusahaan','=','kp.id');
+            })
+            ->select(
+                'envidesk.rekomendasi.id',
+                'envidesk.rekomendasi.nomor_rekomendasi',
+                'kk.nama as nama_klient',
+                'sj.no_jos','kp.nama',
+                DB::raw('DATE(envidesk.rekomendasi.tanggal_rekomendasi) as date_rekomendasi'),
+                DB::raw('TIME(envidesk.rekomendasi.tanggal_rekomendasi) as time_rekomendasi'),
+                DB::raw("CONCAT(LEFT(envidesk.rekomendasi.rekomendasi,150),'...') as rekomendasi"),
+                'envidesk.rekomendasi.gambar_rekomendasi',
+                DB::raw('DATE(envidesk.rekomendasi.tanggal_closed) as date_closed'),
+                DB::raw('TIME(envidesk.rekomendasi.tanggal_closed) as time_closed'),
+                'envidesk.rekomendasi.closed',
+                DB::raw('DATE(envidesk.rekomendasi.rekomendasi_dibaca) as date_dibaca'),
+                DB::raw('TIME(envidesk.rekomendasi.rekomendasi_dibaca) as time_dibaca')
+            )
+            ->where('sj.perusahaan_id', $perusahaanid)->get();
+        }
         $recommendation = new Collection($resource, $this->recTransformer);
         $recommendation = $this->fractal->createData($recommendation)->toArray(); // Transform data
 
@@ -115,6 +162,13 @@ class RekomendasiController extends BaseApiController
         $resource = Rekomendasi::leftJoin('sales.jos as sj', function($joinSJ){
                         $joinSJ->On('envidesk.rekomendasi.jos_id','=','sj.id');
                     })
+
+                    ->leftJoin('master.klien as kk', function($joinKK){
+                        $joinKK->On('envidesk.rekomendasi.klien_id','=','kk.id');
+                    })
+                    // ->leftJoin('master.klien as kk', function($joinKK){
+                    //     $joinKK->On('sales.jos.klien_id','=','kk.id');
+                    // })
                     ->leftJoin('master.pegawai as kp', function($joinKP){
                         $joinKP->On('envidesk.rekomendasi.pic_perusahaan','=','kp.id');
                     })
@@ -122,7 +176,9 @@ class RekomendasiController extends BaseApiController
                         'envidesk.rekomendasi.id',
                         'envidesk.rekomendasi.nomor_rekomendasi',
                         'envidesk.rekomendasi.tahun',
-                        'sj.no_jos','kp.nama',
+                        'kk.nama as nama_klient',
+                        'sj.no_jos',
+                        'kp.nama',
                         DB::raw('DATE(envidesk.rekomendasi.tanggal_rekomendasi) as date_rekomendasi'),
                         DB::raw('TIME(envidesk.rekomendasi.tanggal_rekomendasi) as time_rekomendasi'),
                         'envidesk.rekomendasi.rekomendasi',
@@ -134,8 +190,7 @@ class RekomendasiController extends BaseApiController
                         DB::raw('TIME(envidesk.rekomendasi.tanggal_closed) as time_closed'),
                         'envidesk.rekomendasi.closed'
                     )
-                    ->where('envidesk.rekomendasi.id', $recomId)->get();
-
+                    ->where('envidesk.rekomendasi.id', $recomId)->get();                       
         $recommendation = new Collection($resource, $this->recDetTransformer);
         $recommendation = $this->fractal->createData($recommendation)->toArray(); // Transform data
 

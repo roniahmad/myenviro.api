@@ -107,6 +107,10 @@ class TicketController extends BaseApiController
                     ->leftJoin('master.referensi as mr2', function($joinMR2){
                         $joinMR2->On('envidesk.tiket.status_komplain','=','mr2.id');
                     })
+
+                    ->leftJoin('master.klien as kk', function($joinKK){
+                        $joinKK->On('envidesk.tiket.klien_id','=','kk.id');
+                    })
                     ->leftJoin('sales.jos as sj', function($joinSJ){
                         $joinSJ->On('envidesk.tiket.jos_id','=','sj.id');
                     })
@@ -115,6 +119,7 @@ class TicketController extends BaseApiController
                     })
                     ->select(
                         'envidesk.tiket.id', 'envidesk.tiket.nomor_tiket', 'envidesk.tiket.tanggal_pelayanan',
+                        'kk.nama as nama_klient',
                         'sj.no_jos',
                         'kp.nama',
                         DB::raw('mr2.deskripsi as status_komplain'),
@@ -160,6 +165,65 @@ class TicketController extends BaseApiController
         }
 
         $perusahaanid = $request->perusahaan_id;
+        // $employee = $request->employee_id;
+        
+        // $employee = $request->has('employee_id') ? $request->employee_id : "";
+
+        if ($request->has('employee_id')){
+            $employee = $request->employee_id;
+
+            $jenis_status_komplain = Config('constants.referensi.jenis_status_komplain'); //26
+            $jenis_help_topic = Config('constants.referensi.jenis_help_topic'); //35
+
+            $resource = Ticket::leftJoin('master.referensi as mr', function($joinMR){
+                        $joinMR->On('envidesk.tiket.topik','=','mr.id');
+                    })
+                    ->leftJoin('master.referensi as mr2', function($joinMR2){
+                        $joinMR2->On('envidesk.tiket.status_komplain','=','mr2.id');
+                    })
+                    ->leftJoin('master.klien as kk', function($joinKK){
+                        $joinKK->On('envidesk.tiket.klien_id','=','kk.id');
+                    })
+                    ->leftJoin('sales.jos as sj', function($joinSJ){
+                        $joinSJ->On('envidesk.tiket.jos_id','=','sj.id');
+                    })
+                    ->leftJoin('sales.jos_man_power_detil as jmpd', function($joinJMPD){
+                        $joinJMPD->On('jmpd.jos_id','=','sj.id');
+                    })
+                    ->leftJoin('master.klien_pegawai as kp', function($joinKP){
+                        $joinKP->On('envidesk.tiket.pic_klien','=','kp.id');
+                    })
+
+                    ->select(
+                        'envidesk.tiket.id','envidesk.tiket.nomor_tiket', 'envidesk.tiket.tanggal_pelayanan',
+                        'kk.nama as nama_klient',
+                        'sj.no_jos',
+                        // 'jmpd.pegawai_id',
+                        'kp.nama',
+                        DB::raw('mr2.deskripsi as status_komplain'),
+                        DB::raw('DATE(envidesk.tiket.tanggal_komplain) as date_komplain'),
+                        DB::raw('TIME(envidesk.tiket.tanggal_komplain) as time_komplain'),
+                        DB::raw('mr.deskripsi as topik'),
+                        DB::raw("CONCAT(LEFT(envidesk.tiket.komplain,150),'...') as komplain"),
+                        'envidesk.tiket.gambar_komplain',
+                        DB::raw('DATE(envidesk.tiket.tanggal_in_qc) as date_qc'),
+                        DB::raw('DATE(envidesk.tiket.komplain_dibaca) as date_dibaca'),
+                        DB::raw('TIME(envidesk.tiket.komplain_dibaca) as time_dibaca')
+                    )
+                    ->where('sj.perusahaan_id', $perusahaanid)
+                    ->where('jmpd.pegawai_id', $employee)
+                    ->where('mr.jenis', $jenis_help_topic)
+                    ->where('mr2.jenis', $jenis_status_komplain);
+
+                    if($request->has('client_id')){
+                        $resource = $resource->where('kk.id', $request->client_id);
+                    }
+                    
+                    $resource = $resource->get();
+
+        }else{
+            
+        
         /*
         select et.nomor_tiket, et.tanggal_pelayanan, sj.no_jos,
         kp.nama, mr2.deskripsi as status_komplain,
@@ -186,15 +250,22 @@ class TicketController extends BaseApiController
                     ->leftJoin('master.referensi as mr2', function($joinMR2){
                         $joinMR2->On('envidesk.tiket.status_komplain','=','mr2.id');
                     })
+                    ->leftJoin('master.klien as kk', function($joinKK){
+                        $joinKK->On('envidesk.tiket.klien_id','=','kk.id');
+                    })
                     ->leftJoin('sales.jos as sj', function($joinSJ){
                         $joinSJ->On('envidesk.tiket.jos_id','=','sj.id');
                     })
+
                     ->leftJoin('master.klien_pegawai as kp', function($joinKP){
                         $joinKP->On('envidesk.tiket.pic_klien','=','kp.id');
                     })
+
                     ->select(
                         'envidesk.tiket.id','envidesk.tiket.nomor_tiket', 'envidesk.tiket.tanggal_pelayanan',
+                        'kk.nama as nama_klient',
                         'sj.no_jos',
+                        // 'jmpd.pegawai_id',
                         'kp.nama',
                         DB::raw('mr2.deskripsi as status_komplain'),
                         DB::raw('DATE(envidesk.tiket.tanggal_komplain) as date_komplain'),
@@ -210,11 +281,13 @@ class TicketController extends BaseApiController
                     ->where('mr.jenis', $jenis_help_topic)
                     ->where('mr2.jenis', $jenis_status_komplain)->get();
 
-        $tickets = new Collection($resource, $this->ticketTransformer);
-        $tickets = $this->fractal->createData($tickets)->toArray(); // Transform data
 
-        return $this->respond($tickets);
+        }
 
+                    $tickets = new Collection($resource, $this->ticketTransformer);
+                    $tickets = $this->fractal->createData($tickets)->toArray(); // Transform data
+
+                    return $this->respond($tickets);
     }
 
     public function updateStatusReadComplaint(Request $request)

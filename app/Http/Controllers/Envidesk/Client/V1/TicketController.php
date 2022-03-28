@@ -186,6 +186,9 @@ class TicketController extends BaseApiController
                     ->leftJoin('master.referensi as mr2', function($joinMR2){
                         $joinMR2->On('envidesk.tiket.status_komplain','=','mr2.id');
                     })
+                    ->leftJoin('master.klien as kk', function($joinKK){
+                        $joinKK->On('envidesk.tiket.klien_id','=','kk.id');
+                    })
                     ->leftJoin('sales.jos as sj', function($joinSJ){
                         $joinSJ->On('envidesk.tiket.jos_id','=','sj.id');
                     })

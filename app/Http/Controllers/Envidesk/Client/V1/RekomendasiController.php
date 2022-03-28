@@ -107,6 +107,7 @@ class RekomendasiController extends BaseApiController
         $resource = Rekomendasi::leftJoin('sales.jos as sj', function($joinSJ){
                         $joinSJ->On('envidesk.rekomendasi.jos_id','=','sj.id');
                     })
+
                     ->leftJoin('master.pegawai as kp', function($joinKP){
                         $joinKP->On('envidesk.rekomendasi.pic_perusahaan','=','kp.id');
                     })
@@ -114,6 +115,7 @@ class RekomendasiController extends BaseApiController
                         'envidesk.rekomendasi.id',
                         'envidesk.rekomendasi.nomor_rekomendasi',
                         'envidesk.rekomendasi.tahun',
+                        'kk.nama as nama_klient',
                         'sj.no_jos','kp.nama',
                         DB::raw('DATE(envidesk.rekomendasi.tanggal_rekomendasi) as date_rekomendasi'),
                         DB::raw('TIME(envidesk.rekomendasi.tanggal_rekomendasi) as time_rekomendasi'),

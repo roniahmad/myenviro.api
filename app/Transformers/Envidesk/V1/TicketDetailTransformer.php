@@ -11,6 +11,7 @@ class TicketDetailTransformer extends TransformerAbstract
             "id"                     => $s->id,
             "nomor_tiket"            => $s->nomor_tiket,
             "tanggal_pelayanan"      => $s->tanggal_pelayanan,
+            "nama_klient"            => $s->nama_klient,
             "no_jos"                 => $s->no_jos,
             "nama"                   => $s->nama,
             "status_komplain"        => $s->status_komplain,
